@@ -4,6 +4,7 @@
   "description": "YelpCamp v1",
   "main": "app.js",
   "scripts": {
+    "start": "npx nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Neal Miran",
@@ -12,6 +13,7 @@
     "body-parser": "^1.19.0",
     "ejs": "^2.6.1",
     "express": "^4.17.0",
+    "mongoose": "^5.5.11",
     "nodemon": "^1.19.0"
   }
 }
