@@ -11,7 +11,8 @@ app.set("view engine", "ejs");
 //Schema Setup
 var campgroundSchema = new mongoose.Schema({
     name: String,
-    image: String
+    image: String,
+    description: String
 });
 
 var Campground = mongoose.model("Campground", campgroundSchema);
@@ -19,7 +20,8 @@ var Campground = mongoose.model("Campground", campgroundSchema);
 // Campground.create(
 //     {
 //         name: "Granite Hill", 
-//         image: "https://images.unsplash.com/photo-1504851149312-7a075b496cc7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1249&q=80"
+//         image: "https://images.unsplash.com/photo-1504851149312-7a075b496cc7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1249&q=80",
+//         description: "This is a huge granite hill, no bathrooms. No water. Beautiful granite!"
 //     }, (err, campground) => {
 //         if(err){
 //             console.log(err);
@@ -40,21 +42,24 @@ app.get("/", (req,res) => {
     res.render("landing");
 })
 
+// Index Route
 app.get("/campgrounds", (req,res) => {
     Campground.find({}, function(err, allCampgrounds){
         if(err){
             console.log(err);
         } else {
-            res.render("campgrounds", {campgrounds: allCampgrounds});
+            res.render("index", {campgrounds: allCampgrounds});
         }
     })
 })
 
+// Create Route
 app.post("/campgrounds", (req,res) => {
     //Get data from form and add to campgrounds array
     let name = req.body.name;
     let image = req.body.image;
-    let newCampground = {name: name, image: image};
+    let desc = req.body.description;
+    let newCampground = {name: name, image: image, description: desc};
     // Create a new campground and save to DB
     Campground.create(newCampground, function(err, newlyCreated){
         if(err){
@@ -64,11 +69,24 @@ app.post("/campgrounds", (req,res) => {
             res.redirect("/campgrounds");
         }
     })
-})
+});
 
+// New Route
 app.get("/campgrounds/new", (req,res) => {
     res.render("new");
-})
+});
+
+// Show Route
+app.get("/campgrounds/:id", (req,res) => {
+    //Find the campground with the provided ID
+    Campground.findById(req.params.id, function(err, foundCampground){
+        if(err){
+            console.log(err);
+        } else {
+            res.render("show", {campground: foundCampground});
+        }
+    });
+});
 
 app.listen(port, () => {
     console.log(`Listening on PORT ${port}`);
